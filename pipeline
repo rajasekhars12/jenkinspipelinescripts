@@ -1,0 +1,37 @@
+pipeline{
+    agent any 
+    stages{
+        stage("Git Checkout"){
+            steps{
+                git "https://github.com/rajasekhars12/boxfuse-sample-java-war-hello.git"
+            }
+        }        
+        stage("Maven Build"){
+            steps{
+                sh  "mvn clean package test install"
+            }
+        }
+        stage("Rename_arfile"){
+            steps{
+                sh  "mv target/*.war target/myapp.war"
+            }
+        }
+        stage("Dokcer Build"){
+            steps{ 
+                sh "docker stop raja"
+                sh "docker rm raja"
+                sh "docker system prune"
+                sh "docker build -t rajasekhardevops12/tomcat ."
+                sh "docker run -itd --name raja -p 9080:8080 rajasekhardevops12/tomcat"
+            }
+        }
+         stage("Image pushing to docker hub"){
+            steps{ 
+                withCredentials([string(credentialsId: 'docker-passwd', variable: 'dockerhubpasswd')]) {
+                   sh "docker login -u rajasekhardevops12 -p ${dockerhubpasswd}"
+                }
+                sh "docker push rajasekhardevops12/tomcat"
+            }    
+        }
+    }
+}
