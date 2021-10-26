@@ -31,7 +31,8 @@ pipeline{
                    sh "docker login -u rajasekhardevops12 -p ${dockerhubpasswd}"
                 }
                 sh "docker push rajasekhardevops12/tomcat"
-            }    
+            }
+            }
         }
     }
 }
