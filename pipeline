@@ -94,3 +94,20 @@ pipeline{
         }       
     }
 }
+pipeline {
+  agent any
+    stages {
+      stage('checkout') {
+        steps {
+          git branch: 'develop',
+          credentialsId: "innomindsprojects",
+          url: 'https://innomindsprojects@dev.azure.com/innomindsprojects/DSI-Avatar%20Solution/_git/DSI-AvatarCloudSolution-BE'
+        }
+        post {
+          always {
+            build 'dev'  #In pipeline syntax generator choose Build:build job
+          }
+        }  
+    }
+    }
+}
